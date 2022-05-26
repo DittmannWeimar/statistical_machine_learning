@@ -18,8 +18,10 @@ class Stopwatch:
         return self.elapsed()
 
     def reset(self):
+        time_elapsed = self.elapsed();
         self.end_time = 0
-        self.start_time = 0
+        self.start_time = time.time();
+        return time_elapsed;
 
     def end_and_print(self):
         self.end()
