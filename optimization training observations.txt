@@ -1,0 +1,28 @@
+elu: never makes it above 25%, seems to stick around 10%
+relu: only 0 hidden layers have any accuracy, ends with 40%
+selu: similar performance to elu, with the exception of 0 hidden layers.
+	0 hidden layers perform similar to relu with an about 40% accuracy
+sigmoid: stable trend of increasing accuracy for more hidden layers.
+	Seems to consistantly plateau around 80% accuracy
+softmax: number of hidden layers from 1-4 performs well, up to 70%-80% accuracy
+	5 hidden layers perform less well.
+	all other layers perform extremely poorly.
+softplus: extreme accuracy in training, but vulnurable to overfitting.
+	closes in on 100% training accuracy, but validation shows overfitting
+	validation seems to reach a limit of 80%-90%
+	4 hidden layers seem to be the best in-between
+	Overfitting increases with more layers over time.
+	0-3 hidden layers steadily increase in accuracy
+	overfitting starts early but gets bad around 40 epochs
+softsign: consistantly extremely poor performance, seemingly <10% accuracy
+tanh: varies greatly across layers, but no performance of notice.
+
+ -- CONCLUSION --
+Sigmoid good for stability, but limited to around 80%, try with more epochs.
+	One test with 1000 epochs showed a 3% gain in accuracy after the last 900 epochs.
+Softplus has great accuracy, but suffers from overfitting beyond 40 epochs
+
+ -- FINAL SELECTIONS --
+Sigmoid with 10 layers, 200 epochs
+Softplus with 4 layers, 40 epochs
+

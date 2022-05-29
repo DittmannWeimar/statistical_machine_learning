@@ -195,8 +195,8 @@ def train_layers(ciphers, function, dense_layers_range, **kwargs):
 all_train_time = {}
 data = all_persons_in(ciphers_pca)["train_data"]
 
-activation_functions = ["sigmoid", "relu", "softmax", "softplus", "softsign", "tanh", "selu", "elu"]
-dense_layer_range = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+activation_functions = ["sigmoid", "relu"]#, "softmax", "softplus", "softsign", "tanh", "selu", "elu"]
+dense_layer_range = [0, 1]#, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 kwargs = { "batch_size": 32, "shuffle": True, "epochs": 100, "validation_split": 0.3 }
 
 use_threading = False
