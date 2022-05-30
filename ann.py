@@ -108,7 +108,7 @@ def to_class_matrix(labels):
 data = ciphers_pca
 class_matrix = to_class_matrix(data[:,1].astype(int))
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 def generate_model(num_inputs, num_outputs, num_hidden_layers, activation_function):
 
@@ -132,7 +132,7 @@ def train_network (ciphers, activation_function, dense_layers, **kwargs):
     train_data = ciphers[:, 2:]
     train_labels = ciphers[:, 1]
 
-    n_features = len(data.T)-2
+    n_features = len(ciphers.T)-2
     n_outputs = len(set(train_labels))
 
     # Create model
@@ -193,16 +193,15 @@ def train_layers(ciphers, function, dense_layers_range, **kwargs):
     all_train_time[function] = train_time
 
 all_train_time = {}
-data = all_persons_in(ciphers_pca)["train_data"]
 
-activation_functions = ["sigmoid", "relu"]#, "softmax", "softplus", "softsign", "tanh", "selu", "elu"]
-dense_layer_range = [0, 1]#, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-kwargs = { "batch_size": 32, "shuffle": True, "epochs": 100, "validation_split": 0.3 }
+activation_functions = ["sigmoid"]#, "relu", "softmax", "softplus", "softsign", "tanh", "selu", "elu"]
+dense_layer_range = [10]#, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+kwargs = { "batch_size": 32, "shuffle": True, "epochs": 200, "validation_split": 0.3 }
 
 use_threading = False
 if (not use_threading):
     for function in activation_functions:
-        train_layers(data, function, dense_layer_range, **kwargs)
+        train_layers(ciphers, function, dense_layer_range, **kwargs)
 else:
     threads = [Thread(target=train_layers, args=(data, af, dense_layer_range), kwargs=kwargs)
         for af in activation_functions]

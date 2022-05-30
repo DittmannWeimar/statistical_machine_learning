@@ -156,7 +156,6 @@ def k_folds(arr_size, folds):
 data = ciphers_pca
 class_matrix = to_class_matrix(data[:,1].astype(int))
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 def generate_model(num_inputs, num_outputs, num_hidden_layers, activation_function):
 
@@ -249,33 +248,35 @@ ciphers_shuffle = ciphers[shuffle]
 ciphers_shuffle_pca = decompose(ciphers_shuffle, 0.8)
 size = len(ciphers)
 
-results = {}
-# Sigmoid / API / PCA
-results["sigmoid_api_pca"] = compute_accuracy_folds(k_folds(size, 11), ciphers_shuffle_pca, ann_predictor, activation_function="sigmoid", hidden_layers=10, batch_size=32, epochs=200, shuffle=False, verbose=0, validation_split=0.3)
+def save_obj(obj, fn):
+    js = json.dumps(obj)
 
-# Sigmoid / API / No PCA
-results["sigmoid_api"] = compute_accuracy_folds(k_folds(size, 11), ciphers_shuffle, ann_predictor, activation_function="sigmoid", hidden_layers=10, batch_size=32, epochs=200, shuffle=False, verbose=0, validation_split=0.3)
+    text_file = open(fn, "w")
+    n = text_file.write(js)
+    text_file.close()
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+# Sigmoid / API / PCA
+save_obj(compute_accuracy_folds(k_folds(size, 11), ciphers_shuffle_pca, ann_predictor, activation_function="sigmoid", hidden_layers=10, batch_size=32, epochs=200, shuffle=False, verbose=0, validation_split=0.3), "ann_final_results/sigmoid_api_pca.json")
 
 # Sigmoid / Disjunct / PCA
-results["sigmoid_disjunct_pca"] = compute_accuracy_folds(k_folds(size, 11), ciphers_pca, ann_predictor, activation_function="sigmoid", hidden_layers=10, batch_size=32, epochs=200, shuffle=False, verbose=0, validation_split=0.3)
-
-# Sigmoid / Disjunct / No PCA
-results["sigmoid_disjunct"] = compute_accuracy_folds(k_folds(size, 11), ciphers, ann_predictor, activation_function="sigmoid", hidden_layers=10, batch_size=32, epochs=200, shuffle=False, verbose=0, validation_split=0.3)
+save_obj(compute_accuracy_folds(k_folds(size, 11), ciphers_pca, ann_predictor, activation_function="sigmoid", hidden_layers=10, batch_size=32, epochs=200, shuffle=False, verbose=0, validation_split=0.3), "ann_final_results/sigmoid_disjunct_pca.json")
 
 # Softplus / API / PCA
-results["softplus_api_pca"] = compute_accuracy_folds(k_folds(size, 11), ciphers_shuffle_pca, ann_predictor, activation_function="softplus", hidden_layers=4, batch_size=32, epochs=40, shuffle=False, verbose=0, validation_split=0.3)
-
-# Softplus / API / No PCA
-results["softplus_api"] = compute_accuracy_folds(k_folds(size, 11), ciphers_shuffle, ann_predictor, activation_function="softplus", hidden_layers=4, batch_size=32, epochs=40, shuffle=False, verbose=0, validation_split=0.3)
+save_obj(compute_accuracy_folds(k_folds(size, 11), ciphers_shuffle_pca, ann_predictor, activation_function="softplus", hidden_layers=4, batch_size=32, epochs=40, shuffle=False, verbose=0, validation_split=0.3), "ann_final_results/softplus_api_pca.json")
 
 # Softplus / Disjunct / PCA
-results["softplus_disjunct_pca"] = compute_accuracy_folds(k_folds(size, 11), ciphers_pca, ann_predictor, activation_function="softplus", hidden_layers=4, batch_size=32, epochs=40, shuffle=False, verbose=0, validation_split=0.3)
+save_obj(compute_accuracy_folds(k_folds(size, 11), ciphers_pca, ann_predictor, activation_function="softplus", hidden_layers=4, batch_size=32, epochs=40, shuffle=False, verbose=0, validation_split=0.3), "ann_final_results/softplus_disjunct_pca.json")
+
+# Sigmoid / API / No PCA
+save_obj(compute_accuracy_folds(k_folds(size, 11), ciphers_shuffle, ann_predictor, activation_function="sigmoid", hidden_layers=10, batch_size=32, epochs=200, shuffle=False, verbose=0, validation_split=0.3), "ann_final_results/sigmoid_api.json")
+
+# Sigmoid / Disjunct / No PCA
+save_obj(compute_accuracy_folds(k_folds(size, 11), ciphers, ann_predictor, activation_function="sigmoid", hidden_layers=10, batch_size=32, epochs=200, shuffle=False, verbose=0, validation_split=0.3), "ann_final_results/sigmoid_disjunct.json")
+
+# Softplus / API / No PCA
+save_obj(compute_accuracy_folds(k_folds(size, 11), ciphers_shuffle, ann_predictor, activation_function="softplus", hidden_layers=4, batch_size=32, epochs=40, shuffle=False, verbose=0, validation_split=0.3), "ann_final_results/softplus_api.json")
 
 # Softplus / Disjunct / No PCA
-results["softplus_disjunct"] = compute_accuracy_folds(k_folds(size, 11), ciphers, ann_predictor, activation_function="softplus", hidden_layers=4, batch_size=32, epochs=40, shuffle=False, verbose=0, validation_split=0.3)
-
-js = json.dumps(results)
-
-text_file = open("results.json", "w")
-n = text_file.write(js)
-text_file.close()
+save_obj(compute_accuracy_folds(k_folds(size, 11), ciphers, ann_predictor, activation_function="softplus", hidden_layers=4, batch_size=32, epochs=40, shuffle=False, verbose=0, validation_split=0.3), "ann_final_results/softplus_disjunct.json")
